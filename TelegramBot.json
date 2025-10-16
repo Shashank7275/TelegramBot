@@ -1,0 +1,183 @@
+{
+  "name": "TelegramBot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "32e0cabe-5fe7-408d-8894-b9831b6ce555",
+      "name": "Telegram Trigger",
+      "webhookId": "d3e3d06c-5298-4f2b-ad82-773720087640",
+      "credentials": {
+        "telegramApi": {
+          "id": "dM3SMn7Nx0daEGyX",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a helpful assistant\nwill keep your responses precise on point and will give me every answer to the query into 3 to 4 line itself.\nDont type large paragraph be the best expert in the world and then given me the answer see towards it that you are a bit chit chatty."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "137f84e5-2b07-4eec-a430-c086a4f2f10b",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-pro",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        128,
+        208
+      ],
+      "id": "c1266c75-0547-4927-956f-e306fbff67dd",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "v5qR6VgqGNMbdfwA",
+          "name": "Google Gemini(PaLM) Api account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        256,
+        208
+      ],
+      "id": "7b1e6a6d-6701-4c04-ae84-6132f12f035d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        384,
+        208
+      ],
+      "id": "83d266aa-f38f-431b-91da-7e95a82a40c3",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "f1b81e5d-6a4e-40f6-853d-8f85625ac422",
+      "name": "Send a text message",
+      "webhookId": "a33d081e-3bc1-4cc0-ac83-5a3645e5bdfb",
+      "credentials": {
+        "telegramApi": {
+          "id": "dM3SMn7Nx0daEGyX",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "17c23fd3-915d-4ddd-9719-46b658ab576c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c3233852aa41578378f9f9c0e49a993a5fc336a3cd47bbac6fcc50ba564f751b"
+  },
+  "id": "VBQoCbpbWjDHkBv1",
+  "tags": []
+}
