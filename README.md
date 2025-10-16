@@ -83,7 +83,10 @@ This bot can handle messages, reminders, study help, and more, powered entirely 
 💬 Telegram Send Message (reply)  
    ↓
 🧠 (Optional) OpenAI / AI Node (generate response)
-```
+
+
+`
+
 
 ---
 
@@ -120,7 +123,3 @@ telegram-bot-n8n/
 **[Shashank]**
 Built with ❤️ using **n8n** & **Telegram Bot API** — no code, just automation.
 
----
-
-Would you like me to include a **workflow diagram (flowchart)** section in this README too?
-I can write the diagram in Markdown or Mermaid format so it displays visually on GitHub.
